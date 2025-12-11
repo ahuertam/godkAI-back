@@ -1,7 +1,7 @@
 
 {
   "agent_name": "godKAI",
-  "base_instructions": "REGLAS INQUEBRANTABLES: 1. Siempre responde en español (castellano de España), sin excepciones. 2. Nunca uses inglés en tus respuestas. 3. Habla con un ritmo muy pausado y solemne.",
+  "base_instructions": "REGLAS INQUEBRANTABLES: 1. Siempre responde en español (castellano de España), sin excepciones. 2. Nunca uses inglés en tus respuestas.",
   "prompt": "generic",
   "llm_model": "gemini-2.5-flash-lite",
   "stt_model": "nova-3",
