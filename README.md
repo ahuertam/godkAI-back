@@ -10,6 +10,14 @@ En resumen, el flujo es así:
 4. El TTS (boca) lee la respuesta del LLM en voz alta para que la escuches.
 Estos tres componentes trabajan juntos en tiempo real para crear la ilusión de que estás conversando con una entidad inteligente.
 
+## Configuración Rápida
+
+Para preparar el entorno de la aplicación, puedes usar el script de configuración incluido. Este script instalará las dependencias y descargará los modelos necesarios.
+
+```bash
+./setup.sh
+```
+
 ## Requisitos
 - Python 3.11+
 - Servidor LiveKit accesible
@@ -21,38 +29,23 @@ Estos tres componentes trabajan juntos en tiempo real para crear la ilusión de 
 
 ## Instalación
 
-### Usando Google Gemini (Recomendado)
+Si prefieres una instalación manual, sigue estos pasos:
 
-Para usar los modelos de Google Gemini, sigue estos pasos:
+1. **Crea un entorno virtual:**
+   ```bash
+   python -m venv .venv
+   source .venv/bin/activate
+   ```
 
-1.  **Instala el plugin de Google:**
+2. **Instala las dependencias:**
+   ```bash
+   uv pip install -r requirements.txt
+   ```
 
-    ```bash
-    uv pip install livekit-plugins-google
-    ```
-
-2.  **Configura tu API Key de Google:**
-
-    -   Obtén una API Key desde [Google AI Studio](https://aistudio.google.com/).
-    -   Añádela a tu fichero `.env` o `.env.local`:
-
-        ```env
-        GOOGLE_API_KEY="tu_api_key_de_google"
-        ```
-
-3.  **Actualiza tu `config.json`:**
-
-    Asegúrate de que el `llm_model` en tu fichero de configuración (`config.json` o uno dentro de `/configs`) apunte a un modelo de Gemini:
-
-    ```json
-    "llm_model": "gemini-1.5-flash-latest"
-    ```
-
-```bash
-python -m venv .venv
-source .venv/bin/activate
-pip install -U livekit-agents livekit-plugins python-dotenv
-```
+3. **Descarga los modelos:**
+   ```bash
+   uv run agent.py download-files
+   ```
 
 ## Configuración (`config.json`)
 ```json
@@ -60,11 +53,13 @@ pip install -U livekit-agents livekit-plugins python-dotenv
   "agent_name": "godKAI",
   "base_instructions": "Eres un agente de asistencia que responde por voz y texto.",
   "prompt": "gandalf",
-  "llm_model": "gemini-2.5-flash-lite",
-  "stt_model": "nova-3",
+  "llm_provider": "google",
+  "llm_model": "gemini-1.5-flash-latest",
+  "stt_model": "nova-2",
   "stt_language": "es",
-  "tts_model": "gpt-4o-mini-tts",
-  "tts_voice": "nova",
+  "tts_provider": "openai",
+  "tts_model": "tts-1-hd",
+  "tts_voice": "fable",
   "tts_instructions": "Habla con acento Español de España.",
   "preemptive_generation": true,
   "vad_min_speech_duration": 0.1,
@@ -97,28 +92,18 @@ GOOGLE_API_KEY=<tu-google-key>
 ```
 
 ## Ejecución
-```bash
-python agent.py
-```
-- Conecta al servidor LiveKit.
-- Acepta:
-  - Texto: mensajes `lk.chat` y entradas de `text_input_cb`.
-  - Voz: STT (Deepgram), TTS (OpenAI), detección de turnos (MultilingualModel) y VAD (Silero).
 
-
-### Running the Agent
-
-To run the agent with a specific configuration, use the `--config` argument:
+Para ejecutar el agente, usa el comando `start`. Puedes usar el argumento `--config` para especificar un fichero de configuración del directorio `configs/`.
 
 ```bash
-# Run with the Gandalf configuration
-uv run agent.py --config gandalf console
+# Ejecutar con la configuración de Gandalf (Gemini)
+uv run agent.py start --config gandalf
 
-# Run with the generic configuration
-uv run agent.py --config generic dev
+# Ejecutar con la configuración de Gandalf (Ollama)
+uv run agent.py start --config gandalf_llama
 
-# Run with the default configuration (config.json)
-uv run agent.py console
+# Ejecutar con la configuración por defecto (config.json)
+uv run agent.py start
 ```
 
 ## Interacción

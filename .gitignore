@@ -12,4 +12,3 @@ KMS
 .ruff_cache
 .env.local
 ./logs
-*.txt
