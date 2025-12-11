@@ -2,6 +2,14 @@
 
 Backend de agente conversacional con soporte de voz y texto. Carga su configuración desde `config.json` y el prompt desde `prompts/`.
 
+#  Cómo funciona
+En resumen, el flujo es así:
+1. Tú hablas.
+2. El STT (oído) escucha tu voz y la convierte en texto.
+3. El LLM (cerebro) lee ese texto, piensa una respuesta y la escribe.
+4. El TTS (boca) lee la respuesta del LLM en voz alta para que la escuches.
+Estos tres componentes trabajan juntos en tiempo real para crear la ilusión de que estás conversando con una entidad inteligente.
+
 ## Requisitos
 - Python 3.11+
 - Servidor LiveKit accesible
@@ -87,3 +95,17 @@ python agent.py
 - `agent.py`: agente y sesión LiveKit
 - `config.json`: configuración del agente
 - `prompts/`: ficheros de prompt
+
+## Notas en detalle
+- STT (Speech-to-Text / Habla a Texto):
+
+- ¿Qué es? Es el "oído" del agente. Su única función es convertir el audio de la voz (lo que tú dices) en texto escrito.
+- En nuestro proyecto: Cuando hablas con el agente, el sistema STT (como nova-2 de Deepgram configurado) transcribe tus palabras a texto para que el "cerebro" pueda entenderlas.
+- LLM (Large Language Model / Gran Modelo de Lenguaje):
+
+- ¿Qué es? Es el "cerebro" del agente. Es un modelo de inteligencia artificial muy avanzado (como gemini-1.5-flash-latest ) que ha sido entrenado para entender y generar lenguaje humano.
+- En nuestro proyecto: Una vez que el STT le pasa el texto de lo que dijiste, el LLM lo procesa, piensa en una respuesta siguiendo las instrucciones que le dimos (ser Gandalf, proteger el secreto, hablar en español, etc.) y genera una respuesta en formato de texto.
+- TTS (Text-to-Speech / Texto a Habla):
+
+- ¿Qué es? Es la "boca" o la "voz" del agente. Hace lo contrario del STT: toma un texto escrito y lo convierte en audio hablado.
+- En nuestro proyecto: El sistema TTS (ahora usando Google) recibe la respuesta en texto del LLM y la lee en voz alta, usando la voz que hemos configurado ( es-ES-Standard-A ) y siguiendo las instrucciones de estilo ( Voz masculina grave y profunda... ).
