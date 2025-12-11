@@ -97,8 +97,7 @@ async def entrypoint(ctx: JobContext):
     llm_model = CONFIG.get("llm_model", "gemini-1.5-flash-latest")
     stt_model = CONFIG.get("stt_model", "nova-2")
     stt_lang = CONFIG.get("stt_language", "es")
-    tts_model = CONFIG.get("tts_model", "tts-1")
-    tts_voice = CONFIG.get("tts_voice", "nova")
+
     tts_instr = CONFIG.get("tts_instructions", "Habla con acento Español de España.")
     pregen = _b(CONFIG.get("preemptive_generation", True))
 
@@ -112,7 +111,13 @@ async def entrypoint(ctx: JobContext):
             llm_provider = lk_openai.LLM()
 
     stt_provider = deepgram.STT(model=stt_model, language=stt_lang) if deepgram else None
-    tts_provider = lk_openai.TTS(model=tts_model, voice=tts_voice) if lk_openai else None
+    tts_provider_name = CONFIG.get("tts_provider", "openai")
+    tts_provider = None
+    if _PLUGINS_AVAILABLE:
+        if tts_provider_name == "google" and google:
+            tts_provider = google.TTS(voice=Voice(name=CONFIG.get("tts_voice_name", "es-ES-Standard-A")))
+        elif tts_provider_name == "openai" and lk_openai:
+            tts_provider = lk_openai.TTS(model=CONFIG.get("tts_model", "tts-1-hd"), voice=CONFIG.get("tts_voice", "fable"))
     turn_provider = MultilingualModel() if MultilingualModel else None
     vad_provider = ctx.proc.userdata.get("vad")
 
