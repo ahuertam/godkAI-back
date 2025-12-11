@@ -77,6 +77,22 @@ python agent.py
   - Texto: mensajes `lk.chat` y entradas de `text_input_cb`.
   - Voz: STT (Deepgram), TTS (OpenAI), detección de turnos (MultilingualModel) y VAD (Silero).
 
+
+### Running the Agent
+
+To run the agent with a specific configuration, use the `--config` argument:
+
+```bash
+# Run with the Gandalf configuration
+uv run agent.py --config gandalf console
+
+# Run with the generic configuration
+uv run agent.py --config generic dev
+
+# Run with the default configuration (config.json)
+uv run agent.py console
+```
+
 ## Interacción
 - Texto: envía `topic: lk.chat` desde un cliente LiveKit.
 - Voz: conéctate a la sala; el agente detecta turnos y responde con TTS.

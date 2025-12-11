@@ -1,6 +1,8 @@
 import os
 import json
+import sys
 import asyncio
+
 from datetime import datetime
 try:
     from dotenv import load_dotenv
@@ -29,8 +31,22 @@ def _read_json(path: str):
     except Exception:
         return {}
 
+config_name = None
+if '--config' in sys.argv:
+    try:
+        index = sys.argv.index('--config')
+        config_name = sys.argv[index + 1]
+        # Remove the --config argument and its value from sys.argv
+        sys.argv.pop(index)
+        sys.argv.pop(index)
+    except (ValueError, IndexError):
+        pass
+
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-CONFIG_PATH = os.path.join(BASE_DIR, "config.json")
+if config_name:
+    CONFIG_PATH = os.path.join(BASE_DIR, 'configs', f"{config_name}.json")
+else:
+    CONFIG_PATH = os.path.join(BASE_DIR, "config.json")
 PROMPTS_DIR = os.path.join(BASE_DIR, "prompts")
 
 CONFIG = _read_json(CONFIG_PATH)
