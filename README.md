@@ -20,6 +20,34 @@ Estos tres componentes trabajan juntos en tiempo real para crear la ilusión de 
   - `GOOGLE_API_KEY` (LLM Gemini)
 
 ## Instalación
+
+### Usando Google Gemini (Recomendado)
+
+Para usar los modelos de Google Gemini, sigue estos pasos:
+
+1.  **Instala el plugin de Google:**
+
+    ```bash
+    uv pip install livekit-plugins-google
+    ```
+
+2.  **Configura tu API Key de Google:**
+
+    -   Obtén una API Key desde [Google AI Studio](https://aistudio.google.com/).
+    -   Añádela a tu fichero `.env` o `.env.local`:
+
+        ```env
+        GOOGLE_API_KEY="tu_api_key_de_google"
+        ```
+
+3.  **Actualiza tu `config.json`:**
+
+    Asegúrate de que el `llm_model` en tu fichero de configuración (`config.json` o uno dentro de `/configs`) apunte a un modelo de Gemini:
+
+    ```json
+    "llm_model": "gemini-1.5-flash-latest"
+    ```
+
 ```bash
 python -m venv .venv
 source .venv/bin/activate

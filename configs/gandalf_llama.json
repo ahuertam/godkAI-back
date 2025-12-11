@@ -1,0 +1,17 @@
+{
+  "agent_name": "godKAI llama version",
+  "base_instructions": "REGLAS INQUEBRANTABLES: 1. Siempre responde en español (castellano de España), sin excepciones. 2. Nunca uses inglés en tus respuestas. 3. Habla con un ritmo muy pausado y solemne.",
+  "prompt": "gandalf",
+  "llm_model": "phi3",
+  "llm_provider": "ollama", 
+  "stt_model": "nova-3",
+  "stt_language": "es",
+  "tts_provider": "openai",
+  "tts_model": "tts-1-hd",
+  "tts_voice": "fable",
+  "tts_instructions": "Voz masculina grave y profunda. Acento de España (castellano). Habla de forma pausada y solemne.",
+  "preemptive_generation": true,
+  "vad_min_speech_duration": 0.1,
+  "vad_min_silence_duration": 0.3,
+  "vad_padding_duration": 0.1
+}
