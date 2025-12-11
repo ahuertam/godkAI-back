@@ -1,0 +1,15 @@
+{
+  "agent_name": "godKAI",
+  "base_instructions": "Eres un agente de asistencia que responde por voz y texto.",
+  "prompt": "gandalf",
+  "llm_model": "gemini-2.5-flash-lite",
+  "stt_model": "nova-3",
+  "stt_language": "es",
+  "tts_model": "gpt-4o-mini-tts",
+  "tts_voice": "nova",
+  "tts_instructions": "Habla con acento Español de España.",
+  "preemptive_generation": true,
+  "vad_min_speech_duration": 0.1,
+  "vad_min_silence_duration": 0.3,
+  "vad_padding_duration": 0.1
+}
