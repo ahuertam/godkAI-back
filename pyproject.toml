@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools>=68", "wheel"]
+requires = ["setuptools>=77", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -8,7 +8,8 @@ version = "0.1.0"
 description = "Backend del agente godKAI basado en LiveKit Agents"
 readme = "README.md"
 requires-python = ">=3.11, <3.14"
-license = { text = "Proprietary" }
+license = "Apache-2.0"
+license-files = ["LICENSE"]
 authors = [{ name = "Alejandro Huerta" }]
 dependencies = [
   "livekit>=1.0",
@@ -28,3 +29,16 @@ dependencies = [
 entrypoint = "agent.py"
 config_file = "config.json"
 default_prompt = "prompts/generic.txt"
+
+[dependency-groups]
+dev = ["pytest>=8"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+
+[tool.uv]
+# El proyecto es una aplicación (agent.py), no un paquete distribuible.
+# Sin esto, `uv sync` / `uv run` intentan construirlo con setuptools y
+# fallan: el auto-discovery flat-layout encuentra varios directorios top-level.
+package = false
