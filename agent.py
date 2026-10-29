@@ -121,19 +121,39 @@ async def entrypoint(ctx: JobContext):
 
     llm_provider = None
     if _PLUGINS_AVAILABLE:
-        if google:
+        # `llm_provider` del config: "google" (Gemini), "openai" u "ollama".
+        # Ollama no tiene plugin propio: habla el API de OpenAI (base_url).
+        llm_provider_name = CONFIG.get("llm_provider", "google")
+        if llm_provider_name == "ollama" and lk_openai:
+            llm_provider = lk_openai.LLM(
+                model=llm_model,
+                base_url=CONFIG.get("llm_base_url", "http://localhost:11434/v1"),
+                api_key=CONFIG.get("llm_api_key", "ollama"),
+            )
+        elif llm_provider_name == "openai" and lk_openai:
+            llm_provider = lk_openai.LLM(model=llm_model)
+        elif google:
             llm_provider = google.LLM(model=llm_model)
         elif lk_openai:
-            llm_provider = lk_openai.LLM()
+            llm_provider = lk_openai.LLM(model=llm_model)
 
     stt_provider = deepgram.STT(model=stt_model, language=stt_lang) if deepgram else None
     tts_provider_name = CONFIG.get("tts_provider", "openai")
     tts_provider = None
     if _PLUGINS_AVAILABLE:
         if tts_provider_name == "google" and google:
-            tts_provider = google.TTS(voice=Voice(name=CONFIG.get("tts_voice_name", "es-ES-Standard-A")))
+            # livekit-plugins-google 1.3.x no tiene clase `Voice`: la voz se pasa
+            # por `voice_name` + `language`.
+            tts_provider = google.TTS(
+                language=CONFIG.get("tts_language", "es-ES"),
+                voice_name=CONFIG.get("tts_voice_name", "es-ES-Standard-A"),
+            )
         elif tts_provider_name == "openai" and lk_openai:
-            tts_provider = lk_openai.TTS(model=CONFIG.get("tts_model", "tts-1-hd"), voice=CONFIG.get("tts_voice", "fable"))
+            tts_provider = lk_openai.TTS(
+                model=CONFIG.get("tts_model", "tts-1-hd"),
+                voice=CONFIG.get("tts_voice", "fable"),
+                instructions=CONFIG.get("tts_instructions"),
+            )
     turn_provider = MultilingualModel() if MultilingualModel else None
     vad_provider = ctx.proc.userdata.get("vad")
 
@@ -146,12 +166,9 @@ async def entrypoint(ctx: JobContext):
         preemptive_generation=pregen,
     )
 
-    @room.on("data_received")
-    def on_data_received(packet):
-        if packet.topic == "lk-chat-topic":
-            msg = json.loads(packet.data)
-            if llm_provider:
-                asyncio.create_task(session.generate_reply(user_input=msg["message"]))
+    # El chat de texto lo gestiona RoomIO por nosotros: registra un handler de
+    # text-stream en TOPIC_CHAT ("lk.chat") y llama a generate_reply(user_input=...).
+    # Ver livekit.agents.types.TOPIC_CHAT.
 
     nc_provider = noise_cancellation.BVC() if noise_cancellation else None
 
